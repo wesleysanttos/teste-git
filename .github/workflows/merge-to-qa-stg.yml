@@ -2,12 +2,13 @@ name: Merge main to stg and tst
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - closed
 
 jobs:
   merge-branches:
-    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
 
     steps:
