@@ -19,18 +19,18 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Merge main into QA
+      - name: Merge main into tst
         run: |
-          git checkout QA
-          git merge main --no-ff -m "[sync] main > QA"
-          git push origin QA
+          git checkout tst
+          git merge main --no-ff -m "[sync] main > tst"
+          git push origin tst
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge main into STG
+      - name: Merge main into stg
         run: |
-          git checkout STG
-          git merge main --no-ff -m "[sync] main > STG"
-          git push origin STG
+          git checkout stg
+          git merge main --no-ff -m "[sync] main > stg"
+          git push origin stg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
