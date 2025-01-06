@@ -28,7 +28,7 @@ jobs:
         run: |
           git checkout tst
           git merge main --no-ff -m "Auto-merge main into tst"
-          git push origin tst
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} tst
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,6 +36,6 @@ jobs:
         run: |
           git checkout stg
           git merge main --no-ff -m "Auto-merge main into stg"
-          git push origin stg
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} stg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
