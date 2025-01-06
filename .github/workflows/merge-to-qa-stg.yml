@@ -1,0 +1,36 @@
+name: Merge Main to QA and STG
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  merge-branches:
+    if: ${{ github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge main into QA
+        run: |
+          git checkout QA
+          git merge main --no-ff -m "[sync] main > QA"
+          git push origin QA
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge main into STG
+        run: |
+          git checkout STG
+          git merge main --no-ff -m "[sync] main > STG"
+          git push origin STG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
