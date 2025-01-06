@@ -1,36 +1,28 @@
-name: Merge Main to QA and STG
+name: Sync branch
 
 on:
-  pull_request:
-    types:
-      - closed
-
+  push:
+    branches:
+      - 'main'
 jobs:
-  merge-branches:
-    if: ${{ github.event.pull_request.merged == true }}
+  sync-branch:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@master
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Merge main > tst
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: tst
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge main into tst
-        run: |
-          git checkout tst
-          git merge main --no-ff -m "[sync] main > tst"
-          git push origin tst
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Merge main into stg
-        run: |
-          git checkout stg
-          git merge main --no-ff -m "[sync] main > stg"
-          git push origin stg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Merge main > stg
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: stg
+          github_token: ${{ secrets.GITHUB_TOKEN }}
