@@ -13,29 +13,11 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-
-      - name: List changed files
-        id: changed_files
-        run: |
-          echo "Listing changed files..."
-          git fetch origin main 
-          git diff --name-only origin/main > changed_files.txt
-          cat changed_files.txt
-
-      - name: Copy changed files
-        run: |
-          mkdir -p temp_upload_dir
-          while IFS= read -r file; do
-            mkdir -p "temp_upload_dir/$(dirname "$file")"
-            cp "$file" "temp_upload_dir/$file"
-          done < changed_files.txt
-
+        
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: '44.202.98.187'
+          server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: temp_upload_dir/
-          server-dir: /
           protocol: ftp
