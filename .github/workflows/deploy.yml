@@ -20,7 +20,8 @@ jobs:
         id: changed_files
         run: |
           echo "Listing changed files..."
-          git diff --name-only HEAD^ HEAD > changed_files.txt
+          git fetch origin master 
+          git diff --name-only origin/master > changed_files.txt
           cat changed_files.txt
 
       - name: Upload to FTP
@@ -29,7 +30,6 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          # Conectar ao FTP e realizar uploads
           while IFS= read -r file; do
             echo "Uploading $file..."
             dir=$(dirname "$file")
