@@ -13,9 +13,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp
-
       - name: List changed files
         id: changed_files
         run: |
@@ -24,18 +21,20 @@ jobs:
           git diff --name-only origin/main > changed_files.txt
           cat changed_files.txt
 
-      - name: Upload to FTP
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      - name: Copy changed files
         run: |
+          mkdir -p temp_upload_dir
           while IFS= read -r file; do
-            echo "Uploading $file..."
-            dir=$(dirname "$file")
-            lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_HOST" << EOF
-mkdir -p $dir
-put -O $dir $file
-bye
-EOF
+            mkdir -p "temp_upload_dir/$(dirname "$file")"
+            cp "$file" "temp_upload_dir/$file"
           done < changed_files.txt
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v5
+        with:
+          ftp-server: ${{ secrets.FTP_HOST }}
+          ftp-username: ${{ secrets.FTP_USERNAME }}
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: temp_upload_dir  
+          remote-dir: /  
+          extra-args: "--ignore-time --recursive"
