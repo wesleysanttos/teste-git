@@ -37,5 +37,5 @@ jobs:
               mkdir -p $dir
               put -O $dir $file
               bye
-EOF
+            EOF
           done < changed_files.txt
