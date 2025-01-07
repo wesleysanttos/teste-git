@@ -36,6 +36,6 @@ jobs:
           server: '44.202.98.187'
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: temp_upload_dir
+          local-dir: temp_upload_dir/
           server-dir: /
           protocol: ftp
