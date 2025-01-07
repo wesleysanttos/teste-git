@@ -34,8 +34,8 @@ jobs:
             echo "Uploading $file..."
             dir=$(dirname "$file")
             lftp -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_HOST" << EOF
-              mkdir -p $dir
-              put -O $dir $file
-              bye
+mkdir -p $dir
+put -O $dir $file
+bye
 EOF
           done < changed_files.txt
